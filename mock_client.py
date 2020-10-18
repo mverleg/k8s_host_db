@@ -49,10 +49,14 @@ class MockClient(BaseHTTPRequestHandler):
         raise Exception('post data not found')
 
     def do_POST(self):
-        data = self.parse_POST()
-        print(data)  #TODO @mark: TEMPORARY! REMOVE THIS!
-        host = data.get('hostname', 'localhost')
-        port = data['port']
+        host, port = None, None
+        try:
+            data = self.parse_POST()
+            print(data)  #TODO @mark: TEMPORARY! REMOVE THIS!
+            host = data.get('hostname', 'localhost')
+            port = data[b'port'][0].decode('utf8')
+        except Exception as ex:
+            self.send_page('an error occurred in the mock client: {}'.format(ex))
         self.send_page('connecting to {}:{} NOT IMPLEMENTED YET'.format(host, port))
 
     def do_HEAD(self):
@@ -61,7 +65,7 @@ class MockClient(BaseHTTPRequestHandler):
 
 def run(host, port):
     httpd = HTTPServer((host, port), MockClient)
-    print('Starting {} httpd...'.format(name))
+    print('Starting mock client httpd...')
     httpd.serve_forever()
 
 

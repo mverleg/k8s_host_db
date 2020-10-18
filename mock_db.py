@@ -14,7 +14,7 @@ class MockDB(BaseHTTPRequestHandler):
     def do_GET(self):
         self._set_headers()
         self.wfile.write(dumps(dict(
-            status='you have reached the mock database',
+            status='you have reached the mock database \'{}\''.format(MockDB.name),
         )).encode('utf-8'))
 
     def do_HEAD(self):
@@ -24,9 +24,9 @@ class MockDB(BaseHTTPRequestHandler):
 def run(name, host, port):
     # Setting static property name is ugly generally, but doesn't matter in this case,
     # as there's only one server instance, and very limited code.
-    MockClient.name = name
+    MockDB.name = name
     httpd = HTTPServer((host, port), MockDB)
-    print('Starting httpd...')
+    print('Starting mock db "{}" httpd...'.format(name))
     httpd.serve_forever()
 
 
