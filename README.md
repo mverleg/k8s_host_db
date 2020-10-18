@@ -8,16 +8,16 @@ This is a small demo for how to set up your configuration so that you can run yo
 
 You will need Python 3, Docker and Kubernetes (i.e. minikube).
 
-## Steps
+## DB on local
+
+* Start the 'mock database' in a separate shell:
+
+    python3 mock_db.py "outside" localhost 1234
 
 * Build the client images:
 
-    docker build -t mock-client .
+    docker build -t mock-client -f Dockerfile.client .
 
-* Start the 'mock database':
-
-    python3 mock_db.py localhost 1234
-
-
+## DB in k8s
 
 
