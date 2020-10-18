@@ -28,10 +28,10 @@ if __name__ == "__main__":
     from sys import argv
 
     if len(argv) < 2:
-        print('first argument should be the bind host')
+        print('first argument should be the bind host of the database')
         exit(1)
     if len(argv) < 3:
-        print('second argument should be the bind port')
+        print('second argument should be the bind port of the database')
         exit(1)
     try:
         port = int(argv[2])
