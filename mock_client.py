@@ -4,6 +4,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
 class MockClient(BaseHTTPRequestHandler):
+
     def _set_headers(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
@@ -14,6 +15,7 @@ class MockClient(BaseHTTPRequestHandler):
         self.wfile.write('''<html><body>
             <h1>Mock client</h1>
             <p>Here you can attempt to connect to the database</p>
+            <form action=. method=POST>
             <p>
                 <label for=host>Hostname (within k8s)</label>
                 <input id=host name=host type=text />
@@ -28,6 +30,7 @@ class MockClient(BaseHTTPRequestHandler):
             <p>
                 {}
             </p>
+            </form>
             </body></html>'''.format(output)
             .encode('utf-8'))
 
@@ -47,7 +50,8 @@ class MockClient(BaseHTTPRequestHandler):
 
     def do_POST(self):
         data = self.parse_POST()
-        host = data['hostname']
+        print(data)  #TODO @mark: TEMPORARY! REMOVE THIS!
+        host = data.get('hostname', 'localhost')
         port = data['port']
         self.send_page('connecting to {}:{} NOT IMPLEMENTED YET'.format(host, port))
 
@@ -57,7 +61,7 @@ class MockClient(BaseHTTPRequestHandler):
 
 def run(host, port):
     httpd = HTTPServer((host, port), MockClient)
-    print('Starting httpd...')
+    print('Starting {} httpd...'.format(name))
     httpd.serve_forever()
 
 
