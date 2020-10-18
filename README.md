@@ -8,13 +8,20 @@ This is a small demo for how to set up your configuration so that you can run yo
 
 ## Preparation
 
-You will need Python 3, Docker and Kubernetes (i.e. minikube). Find online how to install them if you don't have them already.
+* You will need Python 3, Docker and Kubernetes (i.e. minikube). Find online how to install them if you don't have them already.
 
-We need to do this step so that minikube will be able to use the Docker images we are going to build (without us having to publich them in a registry):
+* Optional: if you want to start with a clean cluster (**this deletes the old one!!**), type:
 
-    eval $(minikube docker-env)
+      minikube delete
+      minikube start
+
+* We need to do this step so that minikube will be able to use the Docker images we are going to build (without us having to publich them in a registry):
+
+      eval $(minikube docker-env)
     
-You will need to do this for each new terminal.
+  You will need to do this for each new terminal.
+
+
 
 ## DB on local
 
@@ -39,5 +46,10 @@ For the situation that the database is running on the local machine and you want
 
 
 ## DB in k8s
+
+
+## Hints
+
+* To check connectivity, see [Host Access](https://minikube.sigs.k8s.io/docs/handbook/host-access/).
 
 
