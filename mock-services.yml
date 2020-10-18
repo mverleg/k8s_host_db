@@ -1,0 +1,28 @@
+
+# Kubernetes configuration for k8s_host_db demo project
+
+# Start a service that makes the outside DB accessible in the cluster
+# See: https://stackoverflow.com/a/43477742
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: host-db-service
+spec:
+  ports:
+      # this is the port inside the cluster
+      # it can be the same as below, but we make it different to know which one we are using
+    - port: 3006
+      # this is the port outside the cluster (3005 is value from README.md)
+      targetPort: 3005
+
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: host-db-service
+subsets:
+  - addresses:
+      - ip: 10.0.2.2
+    ports:
+      - port: 3005

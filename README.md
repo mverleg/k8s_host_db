@@ -12,7 +12,7 @@ You will need Python 3, Docker and Kubernetes (i.e. minikube).
 
 * Start the 'mock database' in a separate shell:
 
-    python3 mock_db.py "outside" localhost 1005
+    python3 mock_db.py "outside" localhost 3005
 
 * Build the Docker images (with these exact names):
 
