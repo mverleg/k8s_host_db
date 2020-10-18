@@ -6,22 +6,34 @@ This is a small demo for how to set up your configuration so that you can run yo
 * Kubernetes: I'll use minikbue for a local kubernetes cluster for testing
 * Database: I'll use a simple python script to test reachability.
 
-You will need Python 3, Docker and Kubernetes (i.e. minikube).
+## Preparation
+
+You will need Python 3, Docker and Kubernetes (i.e. minikube). Find online how to install them if you don't have them already.
+
+We need to do this step so that minikube will be able to use the Docker images we are going to build (without us having to publich them in a registry):
+
+    eval $(minikube docker-env)
+    
+You will need to do this for each new terminal.
 
 ## DB on local
 
+For the situation that the database is running on the local machine and you want to reach it from kubernetes, follow these steps.
+
+(This will also start a database inside kubernetes, because I did not want to make two versions of the files; you can ignore it).
+
 * Start the 'mock database' in a separate shell:
 
-    python3 mock_db.py "outside" localhost 3005
+      python3 mock_db.py "outside" localhost 3005
 
 * Build the Docker images (with these exact names):
 
-    docker build -t mock-client -f Dockerfile.client .
-    docker build -t mock-db -f Dockerfile.mockdb .
+      docker build -t mock-client -f Dockerfile.client .
+      docker build -t mock-db -f Dockerfile.mockdb .
 
-Deploy them to minikube:
+* Deploy them to minikube:
 
-    
+      kubectl apply -f mock-services.yml
 
 
 

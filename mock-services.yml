@@ -1,8 +1,9 @@
 
-# Kubernetes configuration for k8s_host_db demo project
+## Kubernetes configuration for k8s_host_db demo project
 
-# Start a service that makes the outside DB accessible in the cluster
-# See: https://stackoverflow.com/a/43477742
+## Start a service that makes the outside DB accessible in the cluster
+## See: https://stackoverflow.com/a/43477742
+## If your database is inside the k8s cluster, you can skip this part.
 
 kind: Service
 apiVersion: v1
@@ -26,3 +27,30 @@ subsets:
       - ip: 10.0.2.2
     ports:
       - port: 3005
+
+
+## Start the mock database inside the cluster
+## If your database is outside the k8s cluster, you can skip this part.
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: mock-db-inside
+spec:
+  selector:
+    matchLabels:
+      app: mock-db-inside
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: mock-db-inside
+    spec:
+      containers:
+        - name: mock-db-inside
+          image: mock-db
+          imagePullPolicy: Never
+          ports:
+              # Use a different port from the outside database
+            - containerPort: 2005
