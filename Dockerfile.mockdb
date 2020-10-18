@@ -1,0 +1,9 @@
+
+FROM ellerbrock/alpine-bash-curl-ssl
+
+WORKDIR /app
+
+ADD mock_db.py .
+
+CMD python3 mock_db.py "inside" localhost 2005
+
