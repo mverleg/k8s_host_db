@@ -1,5 +1,5 @@
 
-FROM ellerbrock/alpine-bash-curl-ssl
+FROM frolvlad/alpine-python3
 
 WORKDIR /app
 
