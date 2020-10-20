@@ -1,4 +1,5 @@
 
+# *[UNDER CONSTRUCTION]*
 # Reach localhost database from local Kubernetes cluster
 
 This is a small demo for how to set up your configuration so that you can run your database, or any other service, on localhost outside kubernetes.
@@ -51,5 +52,5 @@ For the situation that the database is running on the local machine and you want
 ## Hints
 
 * To check connectivity, see [Host Access](https://minikube.sigs.k8s.io/docs/handbook/host-access/).
-
+* How to make minikube ingress [info](https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/).
 

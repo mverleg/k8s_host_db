@@ -93,26 +93,30 @@ kind: Service
 metadata:
   name: mock-client-service
 spec:
+  type: LoadBalancer
   selector:
     app: mock-client
   ports:
-    - port: 8080
+    - port: 8088
       targetPort: 8088
 
 ---
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: mock-client-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
-spec:
-  rules:
-    - host: local.example
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              serviceName: mock-client-service
-              servicePort: 8080
+#apiVersion: networking.k8s.io/v1
+## If Ingress is not recognized, update your Kubernetes version
+#kind: Ingress
+#metadata:
+#  name: mock-client-ingress
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /$1
+#spec:
+#  rules:
+#    - host: local.example
+#      http:
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: mock-client-service
+#                port:
+#                  number: 8080
