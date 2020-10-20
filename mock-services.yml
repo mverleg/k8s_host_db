@@ -3,6 +3,44 @@
 ## Kubernetes configuration for k8s_host_db demo project.
 ##
 
+#TODO @mark: start of temporary demo
+
+# hello-kubernetes.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-kubernetes
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: hello-kubernetes
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-kubernetes
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-kubernetes
+  template:
+    metadata:
+      labels:
+        app: hello-kubernetes
+    spec:
+      containers:
+        - name: hello-kubernetes
+          image: paulbouwer/hello-kubernetes:1.8
+          ports:
+            - containerPort: 8080
+---
+
+#TODO @mark: end of temporary demo
+
 ## Start a service that makes the outside DB accessible in the cluster.
 ## See: https://stackoverflow.com/a/43477742
 ## If your database is inside the k8s cluster, you can skip this part.
@@ -98,7 +136,7 @@ spec:
     app: mock-client
   ports:
     - port: 8088
-      targetPort: 8088
+      targetPort: 31088
 
 ---
 #apiVersion: networking.k8s.io/v1
