@@ -4,7 +4,7 @@
 
 This is a small demo for how to set up your configuration so that you can run your database, or any other service, on localhost outside kubernetes.
 
-* Kubernetes: I'll use minikbue for a local kubernetes cluster for testing
+* Kubernetes: I'll use minikube for a local kubernetes cluster for testing
 * Database: I'll use a simple python script to test reachability.
 
 ## Preparation
@@ -14,15 +14,17 @@ This is a small demo for how to set up your configuration so that you can run yo
 * Optional: if you want to start with a clean cluster (**this deletes the old one!!**), type:
 
       minikube delete
-      minikube start
+      minikube start --vm-driver=docker
 
 * We need to do this step so that minikube will be able to use the Docker images we are going to build (without us having to publich them in a registry):
 
       eval $(minikube docker-env)
+      
+  or on Windows with PowerShell:
+  
+      eval (minikube docker-env)
     
   You will need to do this for each new terminal.
-
-
 
 ## DB on local
 
