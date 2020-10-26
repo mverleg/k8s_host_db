@@ -2,7 +2,7 @@
 FROM frolvlad/alpine-python3
 
 ENV NAME "inside"
-ENV HOST "localhost"
+ENV HOST "0.0.0.0"
 ENV PORT 2005
 
 WORKDIR /app

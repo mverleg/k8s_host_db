@@ -1,7 +1,7 @@
 
 FROM frolvlad/alpine-python3
 
-ENV HOST "localhost"
+ENV HOST "0.0.0.0"
 ENV PORT 1234
 
 WORKDIR /app
