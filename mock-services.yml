@@ -9,25 +9,30 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-kubernetes
+  name: hello-kubernetes-service
 spec:
   type: LoadBalancer
   ports:
-    - port: 80
+      # within the cluster
+    - port: 8050
+      # port of pod to contact
       targetPort: 8050
+      # outside the cluster
+      nodePort: 30000
   selector:
     app: hello-kubernetes
 ---
 apiVersion: apps/v1
 kind: Deployment
+# This describes the actual deployment:
 metadata:
-  name: hello-kubernetes
+  name: hello-kubernetes-deployment
+  labels:
+    app: hello-kubernetes
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: hello-kubernetes
   template:
+    # This describes what pods to create:
     metadata:
       labels:
         app: hello-kubernetes
@@ -35,8 +40,16 @@ spec:
       containers:
         - name: hello-kubernetes
           image: paulbouwer/hello-kubernetes:1.8
-          ports:
-            - containerPort: 8050
+          env:
+            - name: MESSAGE
+              value: Custom message by Mark
+            - name: PORT
+              value: "8050"
+  # This describes which pods are part of the deployment,
+  # so this should match metadata in almost all cases:
+  selector:
+    matchLabels:
+      app: hello-kubernetes
 ---
 
 #TODO @mark: end of temporary demo

@@ -19,10 +19,6 @@ This is a small demo for how to set up your configuration so that you can run yo
 * We need to do this step so that minikube will be able to use the Docker images we are going to build (without us having to publich them in a registry):
 
       eval $(minikube docker-env)
-      
-  or on Windows with PowerShell:
-  
-      eval (minikube docker-env)
     
   You will need to do this for each new terminal.
 
