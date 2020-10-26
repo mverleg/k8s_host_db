@@ -1,9 +1,13 @@
 
 FROM frolvlad/alpine-python3
 
+ENV NAME "inside"
+ENV HOST "localhost"
+ENV PORT 2005
+
 WORKDIR /app
 
 ADD mock_db.py .
 
-CMD python3 mock_db.py "inside" localhost 2005
+CMD python3 mock_db.py "$NAME" "$HOST" "$PORT"
 

@@ -1,9 +1,12 @@
 
 FROM frolvlad/alpine-python3
 
+ENV HOST "localhost"
+ENV PORT 1234
+
 WORKDIR /app
 
 ADD mock_client.py .
 
-CMD python3 mock_client.py localhost 8088
+CMD python3 mock_client.py "$HOST" "$PORT"
 
