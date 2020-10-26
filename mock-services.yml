@@ -81,8 +81,9 @@ spec:
         part: inside-db
     spec:
       containers:
-        - name: inside-db-container
+        - name: inside-db-pod
           image: mock-db
+          imagePullPolicy: IfNotPresent
           env:
             - name: NAME
               value: Inside-DB
@@ -117,9 +118,9 @@ spec:
         app: mock-client
     spec:
       containers:
-        - name: host-inside-db-container
+        - name: inside-db-container
           image: mock-client
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           ports:
               # Use a different port from the outside database
             - containerPort: 8088

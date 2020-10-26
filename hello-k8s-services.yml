@@ -38,6 +38,7 @@ spec:
       containers:
         - name: hello-kubernetes
           image: paulbouwer/hello-kubernetes:1.8
+          imagePullPolicy: IfNotPresent
           env:
             - name: MESSAGE
               value: Custom message by Mark
