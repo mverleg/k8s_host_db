@@ -25,8 +25,8 @@ def run(name, host, port):
     # Setting static property name is ugly generally, but doesn't matter in this case,
     # as there's only one server instance, and very limited code.
     MockDB.name = name
+    print('Starting mock db "{}" httpd at {}:{}...'.format(name, host, port))
     httpd = HTTPServer((host, port), MockDB)
-    print('Starting mock db "{}" httpd...'.format(name))
     httpd.serve_forever()
 
 

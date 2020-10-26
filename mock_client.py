@@ -64,8 +64,8 @@ class MockClient(BaseHTTPRequestHandler):
 
 
 def run(host, port):
+    print('Starting mock client httpd at {}:{}...'.format(host, port))
     httpd = HTTPServer((host, port), MockClient)
-    print('Starting mock client httpd...')
     httpd.serve_forever()
 
 
