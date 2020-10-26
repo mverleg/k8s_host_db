@@ -10,7 +10,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: host-db-service
+  name: host-outside-db-service
+  labels:
+    app: k8s-host-db-demo
+    part: host-outside-db
 spec:
   ports:
       # this is the port inside the cluster
@@ -23,8 +26,12 @@ spec:
 kind: Endpoints
 apiVersion: v1
 metadata:
-  name: host-db-service
+  name: host-outside-db-endpoints
+  labels:
+    app: k8s-host-db-demo
+    part: host-outside-db
 subsets:
+  #TODO @mark: how are IP and port determined?
   - addresses:
       - ip: 10.0.2.2
     ports:
@@ -35,27 +42,56 @@ subsets:
 ## If your database is outside the k8s cluster, you can skip this part.
 
 ---
-kind: Deployment
-apiVersion: apps/v1
+apiVersion: v1
+kind: Service
 metadata:
-  name: mock-db-inside
+  name: host-inside-db-service
+  labels:
+    app: k8s-host-db-demo
+    part: host-inside-db
 spec:
+  type: LoadBalancer
+  ports:
+    # port of pod to contact
+    - targetPort: 8050
+      # within the cluster
+      port: 8050
+      # outside the cluster
+      nodePort: 30000
   selector:
-    matchLabels:
-      app: mock-db-inside
+    app: hello-kubernetes
+---
+
+apiVersion: apps/v1
+kind: Deployment
+# This describes the actual deployment:
+metadata:
+  name: host-inside-db-deployment
+  labels:
+    app: k8s-host-db-demo
+    part: host-inside-db
+spec:
   replicas: 1
   template:
+    # This describes what pods to create:
     metadata:
       labels:
-        app: mock-db-inside
+        app: hello-kubernetes
     spec:
       containers:
-        - name: mock-db-inside
-          image: mock-db
-          imagePullPolicy: Never
-          ports:
-              # Use a different port from the outside database
-            - containerPort: 2005
+        - name: hello-kubernetes
+          image: paulbouwer/hello-kubernetes:1.8
+          env:
+            - name: MESSAGE
+              value: Custom message by Mark
+            - name: PORT
+              value: "8050"
+  # This describes which pods are part of the deployment,
+  # so this should match metadata in almost all cases:
+  selector:
+    matchLabels:
+      app: hello-kubernetes
+
 
 
 ## Start the mock client inside the cluster.
