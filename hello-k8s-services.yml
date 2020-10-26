@@ -44,7 +44,7 @@ spec:
             - name: PORT
               value: "8050"
   # This describes which pods are part of the deployment,
-  # so this should match metadata in almost all cases:
+  # so this should match 'metadata' in almost all cases:
   selector:
     matchLabels:
       app: hello-kubernetes

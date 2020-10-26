@@ -10,10 +10,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: host-outside-db-service
+  name: outside-db-service
   labels:
     app: k8s-host-db-demo
-    part: host-outside-db
+    part: outside-db
 spec:
   ports:
       # this is the port inside the cluster
@@ -26,10 +26,10 @@ spec:
 kind: Endpoints
 apiVersion: v1
 metadata:
-  name: host-outside-db-endpoints
+  name: outside-db-endpoints
   labels:
     app: k8s-host-db-demo
-    part: host-outside-db
+    part: outside-db
 subsets:
   #TODO @mark: how are IP and port determined?
   - addresses:
@@ -45,53 +45,57 @@ subsets:
 apiVersion: v1
 kind: Service
 metadata:
-  name: host-inside-db-service
+  name: inside-db-service
   labels:
     app: k8s-host-db-demo
-    part: host-inside-db
+    part: inside-db
 spec:
   type: LoadBalancer
   ports:
     # port of pod to contact
-    - targetPort: 8050
+    - targetPort: 2005
       # within the cluster
-      port: 8050
+      port: 2005
       # outside the cluster
-      nodePort: 30000
+      nodePort: 30001
   selector:
-    app: hello-kubernetes
+    app: k8s-host-db-demo
+    part: inside-db
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 # This describes the actual deployment:
 metadata:
-  name: host-inside-db-deployment
+  name: inside-db-deployment
   labels:
     app: k8s-host-db-demo
-    part: host-inside-db
+    part: inside-db
 spec:
   replicas: 1
   template:
     # This describes what pods to create:
     metadata:
       labels:
-        app: hello-kubernetes
+        app: k8s-host-db-demo
+        part: inside-db
     spec:
       containers:
-        - name: hello-kubernetes
-          image: paulbouwer/hello-kubernetes:1.8
+        - name: inside-db-container
+          image: mock-db
           env:
-            - name: MESSAGE
-              value: Custom message by Mark
+            - name: NAME
+              value: Inside-DB
+            - name: HOST
+              value: localhost
             - name: PORT
-              value: "8050"
+              value: "2005"
   # This describes which pods are part of the deployment,
-  # so this should match metadata in almost all cases:
+  # so this should match 'metadata' in almost all cases:
   selector:
     matchLabels:
-      app: hello-kubernetes
-
+      app: k8s-host-db-demo
+      part: inside-db
 
 
 ## Start the mock client inside the cluster.
@@ -113,7 +117,7 @@ spec:
         app: mock-client
     spec:
       containers:
-        - name: mock-client
+        - name: host-inside-db-container
           image: mock-client
           imagePullPolicy: Never
           ports:
