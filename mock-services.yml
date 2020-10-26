@@ -3,57 +3,6 @@
 ## Kubernetes configuration for k8s_host_db demo project.
 ##
 
-#TODO @mark: start of temporary demo
-
-# hello-kubernetes.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: hello-kubernetes-service
-spec:
-  type: LoadBalancer
-  ports:
-      # within the cluster
-    - port: 8050
-      # port of pod to contact
-      targetPort: 8050
-      # outside the cluster
-      nodePort: 30000
-  selector:
-    app: hello-kubernetes
----
-apiVersion: apps/v1
-kind: Deployment
-# This describes the actual deployment:
-metadata:
-  name: hello-kubernetes-deployment
-  labels:
-    app: hello-kubernetes
-spec:
-  replicas: 1
-  template:
-    # This describes what pods to create:
-    metadata:
-      labels:
-        app: hello-kubernetes
-    spec:
-      containers:
-        - name: hello-kubernetes
-          image: paulbouwer/hello-kubernetes:1.8
-          env:
-            - name: MESSAGE
-              value: Custom message by Mark
-            - name: PORT
-              value: "8050"
-  # This describes which pods are part of the deployment,
-  # so this should match metadata in almost all cases:
-  selector:
-    matchLabels:
-      app: hello-kubernetes
----
-
-#TODO @mark: end of temporary demo
-
 ## Start a service that makes the outside DB accessible in the cluster.
 ## See: https://stackoverflow.com/a/43477742
 ## If your database is inside the k8s cluster, you can skip this part.
