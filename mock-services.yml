@@ -52,10 +52,10 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    # port of pod to contact
+      # port of pod to contact
     - targetPort: 2005
-      # within the cluster (ClusterIP is inside-only)
-      port: 2005
+      # within the cluster (ClusterIP is ik anside-only)
+      port: 2006
   selector:
     app: k8s-host-db-demo
     part: inside-db
