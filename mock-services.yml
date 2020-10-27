@@ -50,14 +50,12 @@ metadata:
     app: k8s-host-db-demo
     part: inside-db
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     # port of pod to contact
     - targetPort: 2005
-      # within the cluster
+      # within the cluster (ClusterIP is inside-only)
       port: 2005
-      # outside the cluster
-      nodePort: 30001
   selector:
     app: k8s-host-db-demo
     part: inside-db
@@ -103,43 +101,61 @@ spec:
 ## Replace this by your application that uses the database.
 
 ---
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
+# This describes the actual deployment:
 metadata:
-  name: mock-client
+  name: mock-client-deployment
+  labels:
+    app: k8s-host-db-demo
+    part: mock-client
 spec:
-  selector:
-    matchLabels:
-      app: mock-client
   replicas: 1
   template:
+    # This describes what pods to create:
     metadata:
       labels:
-        app: mock-client
+        app: k8s-host-db-demo
+        part: mock-client
     spec:
       containers:
-        - name: inside-db-container
+        - name: mock-client-pod
           image: mock-client
           imagePullPolicy: IfNotPresent
-          ports:
-              # Use a different port from the outside database
-            - containerPort: 8088
+          env:
+            - name: HOST
+              value: '0.0.0.0'
+            - name: PORT
+              value: "8088"
+  # This describes which pods are part of the deployment,
+  # so this should match 'metadata' in almost all cases:
+  selector:
+    matchLabels:
+      app: k8s-host-db-demo
+      part: mock-client
 
 ## Expose the above client to the outside world, so we can see it.
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
   name: mock-client-service
+  labels:
+    app: k8s-host-db-demo
+    part: mock-client
 spec:
   type: LoadBalancer
-  selector:
-    app: mock-client
   ports:
-    - port: 8088
-      targetPort: 31088
+      # port of pod to contact
+    - targetPort: 8088
+      # within the cluster
+      port: 8088
+      # outside the cluster
+      nodePort: 30001
+  selector:
+    app: k8s-host-db-demo
+    part: mock-client
 
 ---
 #apiVersion: networking.k8s.io/v1
