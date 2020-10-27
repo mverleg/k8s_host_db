@@ -1,6 +1,7 @@
-from cgi import parse_header, parse_multipart
-from urllib.parse import parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.error import URLError
+from urllib.parse import parse_qs
+from urllib.request import urlopen
 
 
 class MockClient(BaseHTTPRequestHandler):
@@ -46,7 +47,12 @@ class MockClient(BaseHTTPRequestHandler):
         if not port:
             self.send_page('Click connect to attempt a connection', host, port)
             return
-        data = 'TODO'  #TODO @mark:
+        try:
+            with urlopen('http://{}:{}'.format(host, port), timeout=2.0) as response:
+                data = response.read().decode('utf-8')
+        except URLError as err:
+            self.send_page('failed to connect to {}:{} because "{}"'.format(host, port, err.reason), host, port)
+            return
         self.send_page('connecting to {}:{} returned:<br/><pre>{}</pre>'.format(host, port, data), host, port)
 
     def do_HEAD(self):
