@@ -1,11 +1,10 @@
 
-# *[UNDER CONSTRUCTION]*
 # Reach localhost database from local Kubernetes cluster
 
 This is a small demo for how to set up your configuration so that you can run your database, or any other service, on localhost outside Kubernetes.
 
-* Kubernetes: I'll use minikube for a local Kubernetes cluster for testing
-* Database: I'll use a simple python script to test reachability.
+* Kubernetes: I'll use minikube for a local Kubernetes cluster for testing.
+* Database: I'll use a simple python script to test reachability - Kubernetes configuration should be the same for a real database, or any other service.
 
 ## Preparation
 
