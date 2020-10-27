@@ -17,7 +17,6 @@ metadata:
 spec:
   ports:
       # this is the port inside the cluster
-      # it can be the same as below, but we make it different to know which one we are using
     - port: 3006
       # this is the port outside the cluster (3005 is value from README.md)
       targetPort: 3005
@@ -33,7 +32,7 @@ metadata:
 subsets:
   #TODO @mark: how are IP and port determined?
   - addresses:
-      - ip: 10.0.2.2
+      - ip: 192.168.49.1
     ports:
       - port: 3005
 

@@ -54,8 +54,11 @@ For the situation that the database is running on the local machine and you want
 (This will also start a database inside Kubernetes, because I did not want to make two versions of the files; you can ignore it).
 
 * Start the 'mock database' in a separate shell:
+TODO @mark: is 0.0.0.0 needed? 
 
-      python3 mock_db.py "outside" localhost 3005
+      python3 mock_db.py "outside" "0.0.0.0" 3005
+
+Note that we cannot bind only to "localhost". We must bind to the minikube IP or to everything, which is what we do with "0.0.0.0".
 
 ## DB in k8s
 
@@ -99,4 +102,9 @@ For a database **outside** Kubernetes, which we started on `localhost:3005` befo
 
 * To check connectivity, see [Host Access](https://minikube.sigs.k8s.io/docs/handbook/host-access/).
 * How to make minikube ingress [info](https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/).
+* To run commands from "inside" the cluster, you can start a temporary pod, like this:
+
+      kubectl run -it --rm --restart=Never debug-ubuntu-pod --image=arunvelsriram/utils bash
+
+  You can then use tools like `curl` to investigate connectivity.
 
