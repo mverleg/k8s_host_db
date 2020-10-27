@@ -47,18 +47,35 @@ Both if the database is inside the service, and if it's outside, you need these 
 
 You can continue at the next section (DB outside) or the one after that.
 
-## DB on local (outside cluster)
+## DB on localhost (outside cluster)
 
 For the situation that the database is running on the local machine and you want to reach it from Kubernetes, follow these steps.
 
 (This will also start a database inside Kubernetes, because I did not want to make two versions of the files; you can ignore it).
 
-* Start the 'mock database' in a separate shell:
-TODO @mark: is 0.0.0.0 needed? 
+* Start the 'mock database' outside kubernetes in a separate shell so we can test:
 
       python3 mock_db.py "outside" "0.0.0.0" 3005
 
-Note that we cannot bind only to "localhost". We must bind to the minikube IP or to everything, which is what we do with "0.0.0.0".
+  Note that we cannot bind only to "localhost". We must bind to the minikube IP or to everything, which is what we do with "0.0.0.0".
+
+* There is a special IP that can be used from inside minikube to reach the host. It can be found using
+
+      minikube ssh nslookup host.minikube.internal
+
+* We need to enter this IP in `mock-services.yml`. Find the Endpoints section and update the IP. Minimal version:
+
+      kind: Endpoints
+      apiVersion: v1
+      metadata:
+        name: outside-db-endpoints
+      subsets:
+        - addresses:
+            - ip: 192.168.49.1
+          ports:
+            - port: 3005
+
+  In some versions/drivers it may be possible to use `host.minikube.internal` instead of ip, but it did not work for me (see [issue](https://github.com/kubernetes/minikube/issues/8439)).
 
 ## DB in k8s
 

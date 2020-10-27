@@ -30,8 +30,11 @@ metadata:
     app: k8s-host-db-demo
     part: outside-db
 subsets:
-  #TODO @mark: how are IP and port determined?
   - addresses:
+        # This is the IP of `host.minikube.internal`, but that host is not available in all containers,
+        # at least for some versions and drivers (see https://github.com/kubernetes/minikube/issues/8439).
+        # So get the current value and enter it below, using
+        #   minikube ssh nslookup host.minikube.internal
       - ip: 192.168.49.1
     ports:
       - port: 3005
