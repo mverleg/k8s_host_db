@@ -10,19 +10,19 @@ class MockClient(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-    def send_page(self, output):
+    def send_page(self, output, host, port):
         self._set_headers()
         self.wfile.write('''<html><body>
             <h1>Mock client</h1>
             <p>Here you can attempt to connect to the database</p>
-            <form action=. method=POST>
+            <form action=. method=GET>
             <p>
                 <label for=host>Hostname (within k8s)</label>
-                <input id=host name=host type=text />
+                <input id=host name=host type=text value="{}" />
             </p>
             <p>
                 <label for=host>Port (within k8s)</label>
-                <input id=port name=port type=number value=8080 />
+                <input id=port name=port type=number value="{}" />
             </p>
             <p>
                 <input type=submit value=Connect />
@@ -31,40 +31,30 @@ class MockClient(BaseHTTPRequestHandler):
                 {}
             </p>
             </form>
-            </body></html>'''.format(output)
+            </body></html>'''.format(host, port, output)
             .encode('utf-8'))
 
+    def get_host_port(self):
+        params = parse_qs(self.path[2:])
+        return (
+            params.get('host', ['localhost'])[0],
+            params.get('port', [None])[0],
+        )
+
     def do_GET(self):
-        self.send_page('Click connect to attempt a connection')
-
-    def parse_POST(self):
-        ctype, pdict = parse_header(self.headers['content-type'])
-        if ctype == 'multipart/form-data':
-            return parse_multipart(self.rfile, pdict)
-        elif ctype == 'application/x-www-form-urlencoded':
-            length = int(self.headers['content-length'])
-            return parse_qs(
-                self.rfile.read(length),
-                keep_blank_values=1)
-        raise Exception('post data not found')
-
-    def do_POST(self):
-        host, port = None, None
-        try:
-            data = self.parse_POST()
-            print(data)  #TODO @mark: TEMPORARY! REMOVE THIS!
-            host = data.get('hostname', 'localhost')
-            port = data[b'port'][0].decode('utf8')
-        except Exception as ex:
-            self.send_page('an error occurred in the mock client: {}'.format(ex))
-        self.send_page('connecting to {}:{} NOT IMPLEMENTED YET'.format(host, port))
+        host, port = self.get_host_port()
+        if not port:
+            self.send_page('Click connect to attempt a connection', host, port)
+            return
+        data = 'TODO'  #TODO @mark:
+        self.send_page('connecting to {}:{} returned:<br/><pre>{}</pre>'.format(host, port, data), host, port)
 
     def do_HEAD(self):
         self._set_headers()
 
 
 def run(host, port):
-    print('Starting mock client httpd at {}:{}...'.format(host, port))
+    print('Starting mock client httpd at http://{}:{}...'.format(host, port))
     httpd = HTTPServer((host, port), MockClient)
     httpd.serve_forever()
 
