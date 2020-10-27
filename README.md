@@ -77,6 +77,10 @@ For the situation that the database is running on the local machine and you want
 
   In some versions/drivers it may be possible to use `host.minikube.internal` instead of ip, but it did not work for me (see [issue](https://github.com/kubernetes/minikube/issues/8439)).
 
+* To apply this change (if any), re-run
+
+      kubectl apply -f mock-services.yml
+
 ## DB in k8s
 
 The database inside Kubernetes was already started by `kubectl apply` before. You can verify if that is the case with
